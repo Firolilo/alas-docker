@@ -1,0 +1,59 @@
+
+services:
+  mongo:
+    image: mongo:6.0
+    container_name: mongo_balatro
+    ports:
+      - "27017:27017"
+    command: ["--bind_ip_all"]
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: sipi
+      MONGO_INITDB_ROOT_PASSWORD: sipi123
+      MONGO_INITDB_DATABASE: alas_chiquitanas
+    volumes:
+      - mongo_data:/data/db
+      - ./mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+    restart: unless-stopped
+    networks:
+      - balanet 
+  
+  api-bala:
+    build:
+      context: ./API_SIPII_V2.111
+      dockerfile: Dockerfile
+    container_name: api_balatro
+    ports:
+      - "4040:4040"
+    environment:
+      - PORT=4040
+      - MONGODB_URI=mongodb://sipi:sipi123@mongo:27017/alas_chiquitanas?authSource=alas_chiquitanas
+      - NODE_ENV=development
+    depends_on:
+      - mongo
+    networks:
+      - balanet
+
+  react-balatro:
+    build:
+      context: ./SIPII_WEB_V2.111
+      dockerfile: Dockerfile
+    container_name: Balatro_Frontend
+    restart: always
+    ports:
+      - "3000:3000"  
+      - "4041:4041"
+    volumes:
+      - /app/node_modules
+    stdin_open: true
+    tty: true  
+    networks:
+      - balanet
+
+networks:
+  balanet:
+    driver: bridge
+
+
+
+volumes:
+  mongo_data:
