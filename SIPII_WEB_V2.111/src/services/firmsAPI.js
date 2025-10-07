@@ -2,7 +2,7 @@ import axios from 'axios';
 
 export const getFireData = async () => {
     try {
-        const response = await axios.get('http://localhost:4041/api/fires');
+        const response = await axios.get('http://sipi-back2.local/api/fires');
 
         const fires = parseCsv(response.data);
 

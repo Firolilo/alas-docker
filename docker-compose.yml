@@ -1,7 +1,7 @@
 
 services:
   mongo:
-    image: mongo:6.0
+    image: mongo:4.4-focal
     container_name: mongo_balatro
     ports:
       - "27017:27017"
@@ -26,8 +26,9 @@ services:
       - "4040:4040"
     environment:
       - PORT=4040
-      - MONGODB_URI=mongodb://sipi:sipi123@mongo:27017/alas_chiquitanas?authSource=alas_chiquitanas
+      - MONGODB_URI=mongodb://sipi:sipi123@mongo:27017/alas_chiquitanas?authSource=admin
       - NODE_ENV=development
+      - HOST=0.0.0.0
     depends_on:
       - mongo
     networks:
